@@ -1,58 +1,79 @@
 #!/usr/bin/env node
 import chalk from "chalk";
+import { tag, search, list, untag, removeFile } from "../lib/core.js";
 import { createRequire } from "module";
+
 const require = createRequire(import.meta.url);
 const { version } = require("../package.json");
 
 const args = process.argv.slice(2);
+const [action, first, second] = args;
 
-// Handle help
-// if (args.includes("--help") || args.includes("-h")) {
-//   console.log(`
-// ${chalk.bold.green("arkaive")} ")} ${chalk.yellow(`v${version}`)}
+// helpers
+const exit = (msg, code = 1) => {
+  console.log(chalk.red(msg));
+  process.exit(code);
+};
 
-// ${chalk.cyan("Usage:")}
+try {
+  if (!action) exit("No action provided");
 
-// ${chalk.cyan("Options:")}
-//   ${chalk.yellow("--help, -h")}       Show this help message
-//   ${chalk.yellow("--version, -v")}    Show version number
+  // HELP
+  if (action === "--help" || action === "-h") {
+    console.log(`
+arkaive v${version}
 
-// ${chalk.cyan("Arguments:")}
-//   ${chalk.yellow("d / e")}          Action: decrypt or encrypt
-//   ${chalk.yellow("<file>")}           Path to the save file
-//   ${chalk.yellow("<output|'self'>")}  Output path or "self" to overwrite
+Usage:
+  arkaive tag <file> <tags>
+  arkaive search <query>
+  arkaive list <files|tags>
+  arkaive untag <file> <tags>
+  arkaive remove <file>
+`);
+    process.exit(0);
+  }
 
-// ${chalk.cyan("Examples:")}
-//  ${chalk.green("hkse d user1.dat self")}
-//  ${chalk.green("hkse e user1.dat user1_encrypted.dat")}
-// `);
-//   process.exit(0);
-// }
+  // VERSION
+  if (action === "--version" || action === "-v") {
+    console.log(`arkaive v${version}`);
+    process.exit(0);
+  }
 
-// Handle version
-if (args.includes("--version") || args.includes("-v") || args.includes("--v")) {
-  console.log(chalk.yellow(`arkaive version ${version}`));
-  process.exit(0);
+  // TAG
+  if (action === "tag" || action === "t") {
+    if (!first || !second) exit("Usage: tag <file> <tags>");
+    tag({ file: first, tags: second.split(",") });
+    console.log(chalk.green("Tagged"));
+  }
+
+  // SEARCH
+  else if (action === "search" || action === "s") {
+    if (!first) exit("Usage: search <query>");
+    const result = search(first);
+    console.table(result);
+  }
+
+  // LIST
+  else if (action === "list" || action === "l") {
+    if (!first) exit("Usage: list <tags|files|tag_file>");
+    const result = first === "tag_file" ? list(first, second) : list(first);
+    console.table(result);
+  }
+  // UNTAG
+  else if (action === "untag") {
+    if (!first || !second) exit("Usage: untag <file> <tags>");
+    untag({ file: first, tags: second.split(",") });
+    console.log(chalk.green("Untagged"));
+  }
+
+  // REMOVE FILE
+  else if (action === "remove") {
+    if (!first) exit("Usage: remove <file>");
+    removeFile(first);
+    console.log(chalk.green("Removed"));
+  } else {
+    exit(`Unknown action: ${action}`);
+  }
+} catch (err) {
+  exit(err.message);
 }
-
-// Require at least 3 args (action, file, output)
-if (args.length < 3) {
-  console.log(chalk.red(`Usage: hkse <d|e> <file> <output|"self">`));
-  process.exit(1);
-}
-
-// const [action, file, outputArg] = args;
-// const outputPath = outputArg === "self" ? null : outputArg;
-
-// try {
-//   if (action === "d" || action === "e") {
-//     console.log(chalk.blue(`Processing ${file}...`));
-//     pathCrypt(file, outputPath, action);
-//     console.log(chalk.green(`✅ Done!`));
-//   } else {
-//     throw new Error("Action must be 'd' or 'e'");
-//   }
-// } catch (err) {
-//   console.error(chalk.red(err.message));
-//   process.exit(1);
-// }
