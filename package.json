@@ -1,7 +1,7 @@
 {
   "name": "arkaive",
   "version": "1.0.0",
-  "description": "A CLI tool to tag all the files you want in a archive to escape nesting hell",
+  "description": "A CLI tool to tag all the files you want in a archive to escape nesting hell, while making it easy to do so.",
   "type": "module",
   "bin": {
     "arkaive": "bin/arkaive.js"
