@@ -15,6 +15,7 @@ Managing large collections of images and files with traditional folders can quic
 - 📁 Keep files organized without duplicate copies
 - 🖥️ Lightweight command-line interface
 - 🔧 Simple and extensible architecture
+- ⚡ fuzzy search for stored structures, and easy structure
 
 ## Why Arkaive?
 
