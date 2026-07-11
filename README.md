@@ -49,6 +49,21 @@ Future plans include:
 
 Contributions, feature requests, and suggestions are always welcome!
 
+## Usage
+
+  most of it is self explanatory, but for further clarification;
+  
+ ```bash
+arkaive untag /path/to/file
+arkaive remove /path/to/file
+arkaive search tag:tagname
+arkaive search path:pathlocation
+arkaive search header:content AND header:content
+arkaive search header:content OR header:content
+arkaive search header:content NOT header:content
+
+```
+
 ## Installation
 
 Install the CLI globally with npm:
